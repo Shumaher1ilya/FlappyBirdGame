@@ -120,33 +120,41 @@
 
     </script>
 
+    var unityInstance = null; // Глобальная переменная для Unity instance
 
-    <script>
   function getTelegramId() {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('telegram_id') || null;
+    return urlParams.get('ref') || null; // Извлекаем параметр 'ref'
   }
 
-  // Убедитесь, что Unity готов к приёму сообщений
-  window.onload = () => {
-    const telegramId = getTelegramId();
-    if (telegramId) {
-      console.log("Telegram ID:", telegramId);
+  // Инициализация Unity WebGL
+  var script = document.createElement("script");
+  script.src = loaderUrl;
+  script.onload = () => {
+    createUnityInstance(canvas, config, (progress) => {
+      progressBarFull.style.width = 100 * progress + "%";
+    })
+      .then((instance) => {
+        unityInstance = instance; // Сохраняем Unity instance
+        loadingBar.style.display = "none";
+        fullscreenButton.onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
 
-      // Подождите, пока Unity WebGL инициализируется
-      const unityInstance = window.unityInstance;
-      if (unityInstance && unityInstance.Module) {
-        // Передача Telegram ID в Unity
-        console.log("Sending Telegram ID to Unity...");
-        SendMessage('GameManager', 'ReceiveTelegramId', telegramId);
-      } else {
-        console.error("Unity instance is not ready.");
-      }
-    } else {
-      console.warn("No Telegram ID found in URL.");
-    }
+        // Передаём Telegram ID в Unity после инициализации
+        const telegramId = getTelegramId();
+        if (telegramId) {
+          console.log("Telegram ID:", telegramId);
+          unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
+        } else {
+          console.warn("No Telegram ID found in URL.");
+        }
+      })
+      .catch((message) => {
+        alert(message);
+      });
   };
-</script>
+  document.body.appendChild(script);
 
   </body>
 </html>
