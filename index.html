@@ -120,18 +120,30 @@
 
     </script>
 
-<script>
+
+    <script>
   function getTelegramId() {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('telegram_id') || null; // Возвращает значение параметра или null
+    return urlParams.get('telegram_id') || null;
   }
 
-  // Передача Telegram ID в Unity
+  // Убедитесь, что Unity готов к приёму сообщений
   window.onload = () => {
     const telegramId = getTelegramId();
     if (telegramId) {
-      // Вызываем метод Unity для обработки ID
-      SendMessage('GameManager', 'ReceiveTelegramId', telegramId);
+      console.log("Telegram ID:", telegramId);
+
+      // Подождите, пока Unity WebGL инициализируется
+      const unityInstance = window.unityInstance;
+      if (unityInstance && unityInstance.Module) {
+        // Передача Telegram ID в Unity
+        console.log("Sending Telegram ID to Unity...");
+        SendMessage('GameManager', 'ReceiveTelegramId', telegramId);
+      } else {
+        console.error("Unity instance is not ready.");
+      }
+    } else {
+      console.warn("No Telegram ID found in URL.");
     }
   };
 </script>
