@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width=1080 height=1920 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -94,8 +95,8 @@
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "1080px";
+        canvas.style.height = "1920px";
       }
 
       loadingBar.style.display = "block";
@@ -118,5 +119,22 @@
       document.body.appendChild(script);
 
     </script>
+
+<script>
+  function getTelegramId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('telegram_id') || null; // Возвращает значение параметра или null
+  }
+
+  // Передача Telegram ID в Unity
+  window.onload = () => {
+    const telegramId = getTelegramId();
+    if (telegramId) {
+      // Вызываем метод Unity для обработки ID
+      SendMessage('GameManager', 'ReceiveTelegramId', telegramId);
+    }
+  };
+</script>
+
   </body>
 </html>
