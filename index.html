@@ -120,11 +120,61 @@
 
     </script>
 <script>
-    var unityInstance = null; // Глобальная переменная для Unity instance
+// Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAdUdBi1KE5zTH9cqPNCgjYnf5t86vD9Fk",
+    authDomain: "ultanzaconsole.firebaseapp.com",
+    databaseURL: "https://ultanzaconsole-default-rtdb.firebaseio.com",
+    projectId: "ultanzaconsole",
+    storageBucket: "ultanzaconsole.appspot.com",
+    messagingSenderId: "270558055378",
+    appId: "1:270558055378:web:ca810fcc7e7e223505560b"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  var unityInstance = null; // Глобальная переменная для Unity instance
 
   function getTelegramId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('ref') || null; // Извлекаем параметр 'ref'
+  }
+
+  function checkReferralStatusAndSendMessage(telegramId) {
+    if (!telegramId) {
+      console.warn("No Telegram ID found in URL.");
+      return;
+    }
+
+    // Читаем данные из Firebase Realtime Database
+    const referralPath = ref(database, `referrals/${telegramId}`);
+    get(referralPath)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const value = snapshot.val();
+          console.log(`Value for referrals/${telegramId}:`, value);
+          
+          if (value === 1) {
+            console.log("Condition met. Calling Unity function.");
+            if (unityInstance) {
+              unityInstance.SendMessage("GameManager", "FunctionToCall", "Parameter");
+            } else {
+              console.error("Unity instance is not ready.");
+            }
+          }
+        } else {
+          console.warn(`No data found for referrals/${telegramId}`);
+        }
+      })
+      .catch((error) => {
+        console.error("Error reading from Firebase:", error);
+      });
   }
 
   // Инициализация Unity WebGL
@@ -143,12 +193,7 @@
 
         // Передаём Telegram ID в Unity после инициализации
         const telegramId = getTelegramId();
-        if (telegramId) {
-          console.log("Telegram ID:", telegramId);
-          unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
-        } else {
-          console.warn("No Telegram ID found in URL.");
-        }
+        checkReferralStatusAndSendMessage(telegramId);
       })
       .catch((message) => {
         alert(message);
