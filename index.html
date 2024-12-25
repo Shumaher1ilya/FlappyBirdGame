@@ -120,9 +120,9 @@
 
     </script>
 <script>
-// Import the functions you need from the SDKs you need
+    // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+  import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -159,11 +159,19 @@
         if (snapshot.exists()) {
           const value = snapshot.val();
           console.log(`Value for referrals/${telegramId}:`, value);
-          
+
           if (value === 1) {
-            console.log("Condition met. Calling Unity function.");
+            console.log("Condition met. Calling Unity function and deleting ID from database.");
             if (unityInstance) {
-              unityInstance.SendMessage("GameManager", "ReceiveTelegramId", "Parameter");
+              unityInstance.SendMessage("GameManager", "FunctionToCall", telegramId);
+              // Удаляем ID из базы данных
+              remove(referralPath)
+                .then(() => {
+                  console.log(`Successfully deleted referrals/${telegramId} from database.`);
+                })
+                .catch((error) => {
+                  console.error("Error deleting from Firebase:", error);
+                });
             } else {
               console.error("Unity instance is not ready.");
             }
