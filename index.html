@@ -154,10 +154,6 @@
         console.error("Error saving reward:", error);
       });
   }
-
-  // Обеспечиваем доступ к функции из Unity
-  window.saveReward = saveReward;
-  
   function getTelegramId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('ref') || null; // Извлекаем параметр 'ref'
@@ -224,6 +220,7 @@
         alert(message);
       });
   };
+  window.saveReward = saveReward;
   document.body.appendChild(script);
 </script>
   </body>
