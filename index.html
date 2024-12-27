@@ -154,6 +154,7 @@
         console.error("Error saving reward:", error);
       });
   }
+  window.saveReward = saveReward;
   function getTelegramId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('ref') || null; // Извлекаем параметр 'ref'
@@ -215,12 +216,13 @@
         // Передаём Telegram ID в Unity после инициализации
         const telegramId = getTelegramId();
         checkReferralStatusAndSendMessage(telegramId);
+        saveReward("23331", 1);
       })
       .catch((message) => {
         alert(message);
       });
   };
-  window.saveReward = saveReward;
+  
   document.body.appendChild(script);
 </script>
   </body>
