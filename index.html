@@ -178,7 +178,8 @@
           if (value === 1) {
             console.log("Condition met. Calling Unity function and deleting ID from database.");
             if (unityInstance) {
-              //unityInstance.SendMessage("GameManager", "FunctionToCall", telegramId);
+              unityInstance.SendMessage("GameManager", "FunctionToCall", telegramId);
+              console.log("SendMessage");
               // Удаляем ID из базы данных
               remove(referralPath)
                 .then(() => {
