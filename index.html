@@ -161,7 +161,7 @@
   }
 
   function checkReferralStatusAndSendMessage(telegramId) {
-    unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
+    //unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
     if (!telegramId) {
       console.warn("No Telegram ID found in URL.");
       return;
