@@ -148,7 +148,7 @@
       console.warn("No Telegram ID found in URL.");  
       return;
     }
-    unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
+    //unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
 
     // Читаем данные из Firebase Realtime Database
     const referralPath = ref(database, `referrals/${telegramId}`);
