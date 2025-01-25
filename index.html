@@ -133,32 +133,7 @@
     if (!telegramId) {
       console.warn("No Telegram ID found in URL.");
       return;
-    }
-    
-  var script = document.createElement("script");
-  script.src = loaderUrl;
-  script.onload = () => {
-    createUnityInstance(canvas, config, (progress) => {
-      progressBarFull.style.width = 100 * progress + "%";
-    })
-      .then((instance) => {
-        unityInstance = instance; // Сохраняем Unity instance
-        loadingBar.style.display = "none";
-        fullscreenButton.onclick = () => {
-          unityInstance.SetFullscreen(1);
-        };
-
-        // Передаём Telegram ID в Unity после инициализации
-        const telegramId = getTelegramId();
-        checkReferralStatusAndSendMessage(telegramId);
-      })
-      .catch((message) => {
-        alert(message);
-      });
-  };
-  document.body.appendChild(script);
-    // Читаем данные из Firebase Realtime Database
-    const referralPath = ref(database, `referrals/${telegramId}`);
+          const referralPath = ref(database, `referrals/${telegramId}`);
     get(referralPath)
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -188,6 +163,30 @@
       .catch((error) => {
         console.error("Error reading from Firebase:", error);
       });
+    }
+    //Инициализируем SDK
+  var script = document.createElement("script");
+  script.src = loaderUrl;
+  script.onload = () => {
+    createUnityInstance(canvas, config, (progress) => {
+      progressBarFull.style.width = 100 * progress + "%";
+    })
+      .then((instance) => {
+        unityInstance = instance; // Сохраняем Unity instance
+        loadingBar.style.display = "none";
+        fullscreenButton.onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
+
+        // Передаём Telegram ID в Unity после инициализации
+        const telegramId = getTelegramId();
+        checkReferralStatusAndSendMessage(telegramId);
+      })
+      .catch((message) => {
+        alert(message);
+      });
+  };
+  document.body.appendChild(script);
   }
 </script>
   </body>
