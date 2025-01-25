@@ -160,10 +160,10 @@
     return urlParams.get('ref') || null; // Извлекаем параметр 'ref'
   }
 
-  function checkReferralStatusAndSendMessage(telegramId) {
-    //unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
+  function checkReferralStatusAndSendMessage(telegramId) {    
     if (!telegramId) {
       console.warn("No Telegram ID found in URL.");
+      unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
       return;
     }
 
