@@ -163,7 +163,7 @@
             console.log("Check");
             if (unityInstance) {
               console.log("SendMessage");
-              unityInstance.SendMessage("GameManager", "FunctionToCall", telegramId);
+              unityInstance.SendMessage("GameManager", "ReceiveTelegramId", telegramId);
               // Удаляем ID из базы данных
               remove(referralPath)
                 .then(() => {
